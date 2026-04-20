@@ -61,31 +61,28 @@ const ClinicianDashboard = () => {
     };
 
     return (
-        <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="dashboard-container">
+            <header className="dashboard-header">
                 <h2>Clinician Dashboard</h2>
-                <button onClick={handleLogout} style={{ padding: '8px 12px', cursor: 'pointer' }}>Logout</button>
-            </div>
+                <button onClick={handleLogout} className="btn-secondary">Logout</button>
+            </header>
 
             {loading ? (
-                <p>Loading patient data...</p>
+                <div style={{ textAlign: 'center', padding: '50px' }}>
+                    <p>Loading patient data...</p>
+                </div>
             ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '20px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     {patients.map(patient => {
                         const isWarning = patient.latestMood !== null && patient.latestMood <= 4;
                         const isExpanded = expandedPatientId === patient.id;
 
                         return (
-                            <div key={patient.id} style={{ 
-                                border: isWarning ? '2px solid #dc3545' : '1px solid #ccc',
-                                borderRadius: '8px',
-                                backgroundColor: isWarning ? '#fff8f8' : '#fff',
-                                overflow: 'hidden'
-                            }}>
+                            <div key={patient.id} className={`glass-card ${isWarning ? 'warning-card' : ''}`} style={{ padding: '0' }}>
                                 <div 
                                     onClick={() => toggleExpand(patient.id)}
                                     style={{ 
-                                        padding: '15px', 
+                                        padding: '25px', 
                                         display: 'flex',
                                         justifyContent: 'space-between',
                                         alignItems: 'center',
@@ -93,54 +90,53 @@ const ClinicianDashboard = () => {
                                     }}
                                 >
                                     <div>
-                                        <h3 style={{ margin: '0 0 5px 0' }}>Patient: {patient.username}</h3>
-                                        <p style={{ margin: 0, color: '#555' }}>ID: {patient.id}</p>
+                                        <h3 style={{ margin: '0 0 5px 0', fontSize: '1.2rem' }}>Patient: {patient.username}</h3>
+                                        <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.9rem' }}>Patient ID: {patient.id}</p>
                                     </div>
                                     <div style={{ textAlign: 'right' }}>
                                         {isWarning ? (
-                                            <div style={{ 
-                                                backgroundColor: '#dc3545', 
-                                                color: '#fff', 
-                                                padding: '8px 12px', 
-                                                borderRadius: '20px',
-                                                fontWeight: 'bold',
-                                                display: 'inline-block'
-                                            }}>
-                                                ⚠️ EARLY WARNING: {patient.latestMood}/10
+                                            <div className="warning-badge">
+                                                ⚠️ ATTENTION: {patient.latestMood}/10
                                             </div>
                                         ) : (
-                                            <div style={{ color: patient.latestMood !== null ? '#28a745' : '#888' }}>
-                                                {patient.latestMood !== null ? `Stable (Latest: ${patient.latestMood}/10)` : 'No Data Yet'}
+                                            <div className="success-badge">
+                                                {patient.latestMood !== null ? `Stable: ${patient.latestMood}/10` : 'No Data'}
                                             </div>
                                         )}
-                                        <div style={{ marginTop: '5px', fontSize: '0.8em', color: '#007bff' }}>
-                                            {isExpanded ? 'Hide Entries ▲' : 'View All Entries ▼'}
+                                        <div style={{ marginTop: '10px', fontSize: '0.85rem', color: 'var(--accent)', fontWeight: '600' }}>
+                                            {isExpanded ? 'Collapse Details ▲' : 'View Journal Details ▼'}
                                         </div>
                                     </div>
                                 </div>
                                 
                                 {isExpanded && (
-                                    <div style={{ padding: '15px', borderTop: '1px solid #eee', backgroundColor: '#fafafa' }}>
-                                        <h4 style={{ marginTop: 0 }}>Journal Entries</h4>
+                                    <div style={{ 
+                                        padding: '25px', 
+                                        borderTop: '1px solid rgba(255,255,255,0.1)', 
+                                        backgroundColor: 'rgba(255,255,255,0.02)' 
+                                    }}>
+                                        <h4 style={{ fontSize: '1rem', marginBottom: '20px', color: 'var(--accent)' }}>Patient History</h4>
                                         {patient.journals && patient.journals.length > 0 ? (
-                                            patient.journals.map(journal => (
-                                                <div key={journal.id} style={{ border: '1px solid #ddd', padding: '10px', marginBottom: '10px', borderRadius: '5px', backgroundColor: '#fff' }}>
-                                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                                                        <span style={{ fontWeight: 'bold' }}>Mood: {journal.moodScore}/10</span>
-                                                        <span style={{ color: '#666', fontSize: '0.9em' }}>{new Date(journal.timestamp).toLocaleString()}</span>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                                {patient.journals.map(journal => (
+                                                    <div key={journal.id} className="journal-entry">
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                                                            <span style={{ fontWeight: '700', fontSize: '0.9rem' }}>Mood Score: {journal.moodScore}/10</span>
+                                                            <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>{new Date(journal.timestamp).toLocaleString()}</span>
+                                                        </div>
+                                                        <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: '1.5' }}>{journal.entryText}</p>
                                                     </div>
-                                                    <p style={{ margin: 0 }}>{journal.entryText}</p>
-                                                </div>
-                                            ))
+                                                ))}
+                                            </div>
                                         ) : (
-                                            <p style={{ fontStyle: 'italic', color: '#666' }}>No journal entries recorded by this patient.</p>
+                                            <p style={{ fontStyle: 'italic', color: 'var(--text-muted)', textAlign: 'center' }}>No journal entries recorded by this patient.</p>
                                         )}
                                     </div>
                                 )}
                             </div>
                         );
                     })}
-                    {patients.length === 0 && <p>No patients available in the system.</p>}
+                    {patients.length === 0 && <p style={{ textAlign: 'center', color: 'var(--text-muted)' }}>No patients registered in the system.</p>}
                 </div>
             )}
         </div>

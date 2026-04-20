@@ -15,8 +15,6 @@ const LoginPage = () => {
             const response = await api.post('/api/auth/login', { username, password });
             const { token, role } = response.data;
             
-            // Note: Our API AuthResponseDto currently only returns token and role.
-            // Using a mocked patientId until backend sends it natively
             localStorage.setItem('token', token);
             localStorage.setItem('role', role);
             if(role === 'PATIENT') {
@@ -34,34 +32,39 @@ const LoginPage = () => {
     };
 
     return (
-        <div style={{ maxWidth: '400px', margin: '100px auto', border: '1px solid #ccc', padding: '20px', borderRadius: '8px' }}>
-            <h2>Login</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                <div>
-                    <label>Username:</label>
-                    <input 
-                        type="text" 
-                        value={username} 
-                        onChange={(e) => setUsername(e.target.value)} 
-                        required 
-                        style={{ width: '100%', padding: '8px', marginTop: '5px' }}
-                    />
-                </div>
-                <div>
-                    <label>Password:</label>
-                    <input 
-                        type="password" 
-                        value={password} 
-                        onChange={(e) => setPassword(e.target.value)} 
-                        required 
-                        style={{ width: '100%', padding: '8px', marginTop: '5px' }}
-                    />
-                </div>
-                <button type="submit" style={{ padding: '10px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
-                    Login
-                </button>
-            </form>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <div className="glass-card" style={{ maxWidth: '400px', width: '100%' }}>
+                <h2 style={{ textAlign: 'center', marginBottom: '30px' }}>Welcome Back</h2>
+                {error && <p style={{ color: 'var(--danger)', textAlign: 'center', marginBottom: '15px' }}>{error}</p>}
+                <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <div className="form-group">
+                        <label>Username</label>
+                        <input 
+                            type="text" 
+                            placeholder="Enter your username"
+                            value={username} 
+                            onChange={(e) => setUsername(e.target.value)} 
+                            required 
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Password</label>
+                        <input 
+                            type="password" 
+                            placeholder="Enter your password"
+                            value={password} 
+                            onChange={(e) => setPassword(e.target.value)} 
+                            required 
+                        />
+                    </div>
+                    <button type="submit" className="btn-premium" style={{ marginTop: '10px' }}>
+                        Sign In
+                    </button>
+                </form>
+                <p style={{ marginTop: '20px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+                    Mental Health Early Warning System
+                </p>
+            </div>
         </div>
     );
 };

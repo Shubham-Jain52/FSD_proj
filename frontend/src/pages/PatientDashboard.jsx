@@ -52,54 +52,73 @@ const PatientDashboard = () => {
     };
 
     return (
-        <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="dashboard-container">
+            <header className="dashboard-header">
                 <h2>Patient Dashboard</h2>
-                <button onClick={handleLogout} style={{ padding: '8px 12px', cursor: 'pointer' }}>Logout</button>
-            </div>
+                <button onClick={handleLogout} className="btn-secondary">Logout</button>
+            </header>
 
-            <div style={{ border: '1px solid #ccc', padding: '20px', borderRadius: '8px', marginBottom: '30px' }}>
-                <h3>Submit New Journal Entry</h3>
-                {error && <div style={{ color: 'white', backgroundColor: '#dc3545', padding: '10px', borderRadius: '5px', marginBottom: '15px' }}>{error}</div>}
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                    <div>
-                        <label>How are you feeling? (1-10): <span style={{ fontWeight: 'bold' }}>{moodScore}</span></label>
+            <section className="glass-card">
+                <h3 style={{ marginBottom: '20px' }}>Submit New Journal Entry</h3>
+                {error && (
+                    <div style={{ 
+                        color: '#fff', 
+                        backgroundColor: 'var(--danger)', 
+                        padding: '12px', 
+                        borderRadius: '12px', 
+                        marginBottom: '20px',
+                        fontSize: '0.9rem' 
+                    }}>
+                        {error}
+                    </div>
+                )}
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <div className="form-group">
+                        <label>How are you feeling? (1-10): <span style={{ color: 'var(--accent)', fontWeight: '700' }}>{moodScore}</span></label>
                         <input 
                             type="range" 
                             min="1" max="10" 
                             value={moodScore} 
                             onChange={(e) => setMoodScore(e.target.value)} 
-                            style={{ width: '100%' }}
+                            style={{ 
+                                width: '100%', 
+                                cursor: 'pointer',
+                                accentColor: 'var(--accent)'
+                            }}
                         />
                     </div>
-                    <div>
-                        <label>Journal Text:</label>
+                    <div className="form-group">
+                        <label>Journal Text</label>
                         <textarea 
                             value={entryText} 
                             onChange={(e) => setEntryText(e.target.value)} 
                             rows="4"
-                            style={{ width: '100%', padding: '8px', marginTop: '5px' }}
+                            placeholder="Share your thoughts..."
                         />
                     </div>
-                    <button type="submit" style={{ padding: '10px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
+                    <button type="submit" className="btn-premium">
                         Submit Entry
                     </button>
                 </form>
-            </div>
+            </section>
 
-            <div>
-                <h3>Past Entries</h3>
-                {journals.map((journal) => (
-                    <div key={journal.id} style={{ border: '1px solid #eee', padding: '15px', marginBottom: '10px', borderRadius: '5px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                            <span style={{ fontWeight: 'bold' }}>Mood: {journal.moodScore}/10</span>
-                            <span style={{ color: '#666', fontSize: '0.9em' }}>{new Date(journal.timestamp).toLocaleString()}</span>
+            <section className="glass-card">
+                <h3 style={{ marginBottom: '20px' }}>Past Entries</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                    {journals.map((journal) => (
+                        <div key={journal.id} className="journal-entry">
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', alignItems: 'center' }}>
+                                <span className="success-badge">Mood: {journal.moodScore}/10</span>
+                                <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                                    {new Date(journal.timestamp).toLocaleDateString()} at {new Date(journal.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                            </div>
+                            <p style={{ margin: 0, lineHeight: '1.6', color: 'rgba(255,255,255,0.9)' }}>{journal.entryText}</p>
                         </div>
-                        <p style={{ margin: 0 }}>{journal.entryText}</p>
-                    </div>
-                ))}
-                {journals.length === 0 && <p>No entries found.</p>}
-            </div>
+                    ))}
+                    {journals.length === 0 && <p style={{ textAlign: 'center', color: 'var(--text-muted)' }}>No entries found yet.</p>}
+                </div>
+            </section>
         </div>
     );
 };
